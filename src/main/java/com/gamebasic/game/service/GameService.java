@@ -62,7 +62,7 @@ public class GameService {
     public GameDetailResponse updateProgress(Long gameId, ProgressRequest request) {
         Game game = findGame(gameId);
 
-        if (game.getStatus() == GameStatus.CLEARED || game.getStatus() == GameStatus.FAILED){
+        if (game.isFinished()){
             throw new ResponseStatusException(
                     HttpStatus.CONFLICT,
                     "이미 끝난 게임입니다. (id : " + gameId + ")"
