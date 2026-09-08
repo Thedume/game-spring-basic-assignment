@@ -12,5 +12,5 @@ public interface RunCardRepository extends JpaRepository<RunCard, Long> {
     void deleteAllByGame(Game game);
 
     // TODO (Lv 11): @Query 작성
-    // List<DeckCount> countByGames(List<Game> games);
+    List<DeckCount> countByGames(List<Game> games);
 }
