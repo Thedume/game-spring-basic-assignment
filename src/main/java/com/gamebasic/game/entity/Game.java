@@ -12,6 +12,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "games")
@@ -37,6 +39,9 @@ public class Game {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
     private GameStatus status;
+
+    private LocalDateTime CreatedAt;
+    private LocalDateTime UpdatedAt;
 
     public Game(String playerName) {
         this.playerName = playerName;
