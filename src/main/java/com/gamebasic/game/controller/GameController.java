@@ -50,4 +50,11 @@ public class GameController {
         gameService.renameGame(gameId, request);
         return ResponseEntity.noContent().build();
     }
+
+    // 플레이어 기록 삭제
+    @DeleteMapping("/games/{gameId}")
+    public ResponseEntity<Void> deleteGame(@PathVariable Long gameId) {
+        gameService.deleteGame(gameId);
+        return ResponseEntity.noContent().build();
+    }
 }
