@@ -1,32 +1,11 @@
-# ==============================
-# 1단계: Spring Boot 빌드
-# ==============================
-FROM eclipse-temurin:21-jdk AS builder
+# 1. Java 21 이미지
+FROM eclipse-temurin:21-jdk-alpine
 
+# 2. 작업 디렉터리
 WORKDIR /app
 
-COPY gradlew .
-COPY gradle ./gradle
-COPY build.gradle .
-COPY settings.gradle .
+# 3. Gradle로 빌드된 Spring Boot JAR 복사
+COPY build/libs/*.jar /app/app.jar
 
-# Windows에서 작성된 gradlew의 CRLF 문제 방지
-RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
-
-COPY src ./src
-
-RUN ./gradlew bootJar --no-daemon -x test
-
-
-# ==============================
-# 2단계: Spring Boot 실행
-# ==============================
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-COPY --from=builder /app/build/libs/*.jar app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# 4. Spring Boot 실행
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
