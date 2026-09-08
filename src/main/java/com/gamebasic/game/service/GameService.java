@@ -4,6 +4,7 @@ import com.gamebasic.game.dto.CreateRequest;
 import com.gamebasic.game.dto.GameDetailResponse;
 import com.gamebasic.game.dto.ProgressRequest;
 import com.gamebasic.game.entity.Game;
+import com.gamebasic.game.entity.GameStatus;
 import com.gamebasic.game.repository.GameRepository;
 import com.gamebasic.runcard.dto.CardResponse;
 import com.gamebasic.runcard.dto.RunCardRequest;
@@ -61,20 +62,32 @@ public class GameService {
     @Transactional
     public GameDetailResponse updateProgress(Long gameId, ProgressRequest request) {
         Game game = findGame(gameId);
+
+        if (game.getStatus() == GameStatus.CLEARED || game.getStatus() == GameStatus.FAILED){
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "이미 끝난 게임입니다. (id : " + gameId + ")"
+            );
+        }
+
         game.updateProgress(
             request.getCurrentHp(),
             request.getCurrentFloor(),
             request.getPhase(),
             request.getStatus()
         );
+
         // 요청의 deck은 저장할 덱 전체이므로 기존 카드를 모두 지우고 요청 순서대로 다시 저장합니다.
         runCardRepository.deleteAllByGame(game);
         saveDeck(game, request.getDeck());
+
         List<RunCard> cards = runCardRepository.findAllByGameOrderByIdAsc(game);
         List<CardResponse> deck = new ArrayList<>();
+
         for (RunCard card : cards) {
             deck.add(new CardResponse(card.getId(), card.getCardType(), card.getAcquiredFloor()));
         }
+
         return new GameDetailResponse(
             game.getId(),
             game.getPlayerName(),
