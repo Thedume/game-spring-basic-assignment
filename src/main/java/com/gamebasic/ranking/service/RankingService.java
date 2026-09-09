@@ -1,6 +1,7 @@
 package com.gamebasic.ranking.service;
 
 import com.gamebasic.ranking.client.RankingClient;
+import com.gamebasic.ranking.dto.RankingResponse;
 import com.gamebasic.ranking.dto.RankingSource;
 import com.gamebasic.runcard.entity.CardType;
 import lombok.RequiredArgsConstructor;
@@ -193,6 +194,61 @@ public class RankingService {
         }
 
         return result;
+    }
+
+    // 최종 랭킹 구하기
+    public RankingResponse getRanking() {
+        RankingSource source = rankingClient.fetch();
+
+        List<RankingSource.Record> validRecords = new ArrayList<>();
+
+        int excludedCount = 0;
+
+        // 1. 순위 대상 + 정상 여부 검사
+        for (RankingSource.Record record : source.getRecords()) {
+            if (!isRankingCandidate(record)) {
+                continue;
+            }
+
+            if (!isValidRecord(record)){
+                excludedCount++;
+                continue;
+            }
+
+            validRecords.add(record);
+        }
+
+        // 2. 정상 기록 정렬
+        sortRecords(validRecords);
+
+        // 3. 동일 플레이어 중복 제거
+        List<RankingSource.Record> rankingRecords = removeDuplicatePlayers(validRecords);
+
+        // 4. RankingResponse.Entry 생성
+        List<RankingResponse.Entry> entries = new ArrayList<>();
+
+        for (int i = 0; i < rankingRecords.size(); i++){
+            RankingSource.Record record = rankingRecords.get(i);
+
+            RankingResponse.Entry entry =
+                    new RankingResponse.Entry(
+                            i+1,
+                            record.getPlayer().getName(),
+                            record.getRun().getDurationSeconds(),
+                            record.getRun().getFinalHp(),
+                            record.getBossFight().getTotalTurns(),
+                            record.getDeck().getCards().size()
+                    );
+
+            entries.add(entry);
+        }
+
+        return new RankingResponse(
+                source.getMeta().getSeason().getId(),
+                source.getRecords().size(),
+                excludedCount,
+                entries
+        );
     }
 
     // 테스트 확인용 코드
