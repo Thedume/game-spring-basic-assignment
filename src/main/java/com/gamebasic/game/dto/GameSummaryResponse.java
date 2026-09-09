@@ -14,7 +14,7 @@ public class GameSummaryResponse {
     private final int currentFloor;
     private final GamePhase phase;
     private final GameStatus status;
-    private final int DeckSize;
+    private final int deckSize;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -35,7 +35,7 @@ public class GameSummaryResponse {
         this.currentFloor = currentFloor;
         this.phase = phase;
         this.status = status;
-        this.DeckSize = deckSize;
+        this.deckSize = deckSize;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
