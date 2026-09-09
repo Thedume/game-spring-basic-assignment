@@ -161,6 +161,23 @@ public class RankingService {
         return false;
     }
 
+    // 정렬 작업
+    private void sortRecords(List<RankingSource.Record> records){
+        records.sort(
+                Comparator
+                        .comparingInt(
+                                (RankingSource.Record record) ->
+                                        record.getRun().getDurationSeconds()
+                        )
+                        .thenComparing(
+                                (RankingSource.Record record) ->
+                                        record.getRun().getFinalHp(),
+                                Comparator.reverseOrder()
+                        )
+                        .thenComparingLong(RankingSource.Record::getId)
+        );
+    }
+
     // 테스트 확인용 코드
     public void checkRankingRecords() {
 
