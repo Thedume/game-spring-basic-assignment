@@ -178,6 +178,23 @@ public class RankingService {
         );
     }
 
+    // 중복 플레이어 기록 제거
+    private List<RankingSource.Record> removeDuplicatePlayers(
+            List<RankingSource.Record> records
+    ) {
+        Set<String> playerIds = new HashSet<>();
+        List<RankingSource.Record> result = new ArrayList<>();
+
+        for(RankingSource.Record record : records) {
+            String playerId = record.getPlayer().getId();
+
+            if (playerIds.add(playerId))
+                result.add(record);
+        }
+
+        return result;
+    }
+
     // 테스트 확인용 코드
     public void checkRankingRecords() {
 
