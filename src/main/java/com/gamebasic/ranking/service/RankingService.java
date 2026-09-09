@@ -141,6 +141,8 @@ public class RankingService {
         return bossFight.getTotalTurns() == totalTurns;
     }
 
+    // 마무리 카드
+    // 조건. 마무리 카드가 기록의 cards 안에 있어야 함.
     private boolean hadValidFinishingCard(RankingSource.Record record) {
         if (record.getBossFight() == null
             || record.getBossFight().getFinishingCard() == null
@@ -159,6 +161,7 @@ public class RankingService {
         return false;
     }
 
+    // 테스트 확인용 코드
     public void checkRankingRecords() {
 
         RankingSource source = rankingClient.fetch();
