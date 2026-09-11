@@ -152,6 +152,16 @@ Spring Data JPA Auditing을 이용해 자동으로 저장 및 갱신되도록 �
 | `DELETE` | `/games/{gameId}` | 게임 삭제 |
 | `GET` | `/rankings` | 외부 데이터를 가공한 랭킹 조회 |
 
+
+## ERD
+
+![ERD](./resources/erd.png)
+
+- Game과 RunCard는 1:N 관계입니다.
+- RunCard의 game_id는 Game의 id를 참조합니다.
+- 게임 삭제 시 해당 게임에 속한 RunCard도 함께 삭제합니다.
+
+
 ## 프로젝트 구조
 
 ```text
